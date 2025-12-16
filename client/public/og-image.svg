@@ -1,0 +1,41 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="1200" height="630" fill="#f8fafc"/>
+  
+  <!-- Main background with gradient -->
+  <defs>
+    <linearGradient id="bgGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.1"/>
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:0.1"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bgGradient)"/>
+  
+  <!-- VitaWin Logo Circle -->
+  <circle cx="300" cy="315" r="120" fill="#fbbf24" stroke="#f59e0b" stroke-width="8"/>
+  
+  <!-- Logo Text -->
+  <text x="300" y="330" text-anchor="middle" font-family="Arial, sans-serif" font-size="48" font-weight="bold" fill="#1f2937">VitaWin</text>
+  
+  <!-- Main Title -->
+  <text x="550" y="250" font-family="Arial, sans-serif" font-size="56" font-weight="bold" fill="#1f2937">VitaWin</text>
+  
+  <!-- Subtitle -->
+  <text x="550" y="310" font-family="Arial, sans-serif" font-size="32" fill="#6b7280">Премиальные витамины и БАД</text>
+  
+  <!-- Description -->
+  <text x="550" y="360" font-family="Arial, sans-serif" font-size="24" fill="#6b7280">MLM компания 3.0 • Партнерская программа до 20%</text>
+  
+  <!-- Quality Badge -->
+  <rect x="550" y="400" width="300" height="60" rx="30" fill="#10b981"/>
+  <text x="700" y="440" text-anchor="middle" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="white">Качество • Наука • Результат</text>
+  
+  <!-- Decorative Elements -->
+  <circle cx="1050" cy="150" r="40" fill="#10b981" opacity="0.2"/>
+  <circle cx="1100" cy="200" r="25" fill="#3b82f6" opacity="0.2"/>
+  <circle cx="1000" cy="120" r="15" fill="#f59e0b" opacity="0.3"/>
+  
+  <circle cx="150" cy="500" r="35" fill="#ec4899" opacity="0.2"/>
+  <circle cx="100" cy="450" r="20" fill="#8b5cf6" opacity="0.2"/>
+  <circle cx="200" cy="480" r="12" fill="#06b6d4" opacity="0.3"/>
+</svg>

@@ -1,0 +1,161 @@
+import { create } from 'zustand';
+
+const API_BASE = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+
+interface User {
+    id: string;
+    email?: string;
+    firstName?: string;
+    username?: string;
+    phone?: string;
+    telegramId?: number | string;
+    referralCode?: string;
+    appliedReferralCode?: string;
+    balance?: number;
+    isAdmin?: boolean;
+    mlmStatus?: string;
+    rank?: string;
+}
+
+interface RegisterData {
+    email: string;
+    password: string;
+    firstName: string;
+    phone?: string;
+    referralCode?: string;
+}
+
+interface LoginData {
+    email: string;
+    password: string;
+}
+
+interface SimpleAuthStore {
+    user: User | null;
+    accessToken: string | null;
+    refreshToken: string | null;
+    isLoading: boolean;
+    error: string | null;
+
+    setUser: (user: User | null) => void;
+    setTokens: (accessToken: string | null, refreshToken?: string | null) => void;
+
+    register: (data: RegisterData) => Promise<void>;
+    login: (data: LoginData) => Promise<void>;
+    logout: () => Promise<void>;
+    refreshAccessToken: () => Promise<boolean>;
+    initializeAuth: () => void;
+}
+
+export const useSimpleAuthStore = create<SimpleAuthStore>((set, get) => ({
+    user: null,
+    accessToken: null,
+    refreshToken: null,
+    isLoading: false,
+    error: null,
+
+    setUser: (user) => {
+        console.log('AuthStore: setUser', user);
+        set({ user });
+    },
+
+    setTokens: (accessToken, refreshToken) => {
+        set({ accessToken, refreshToken: refreshToken ?? null });
+    },
+
+    register: async (data) => {
+        set({ isLoading: true, error: null });
+        try {
+            const res = await fetch(`${API_BASE}/api/auth/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', // cookie mode
+                body: JSON.stringify(data),
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.message || 'Ошибка регистрации');
+            }
+
+            const result = await res.json();
+            get().setUser(result.user);
+            get().setTokens(result.accessToken, result.refreshToken);
+
+            set({ isLoading: false });
+        } catch (e: any) {
+            console.error('Register error:', e);
+            set({ isLoading: false, error: e.message });
+            throw e;
+        }
+    },
+
+    login: async (data) => {
+        set({ isLoading: true, error: null });
+        try {
+            const res = await fetch(`${API_BASE}/api/auth/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include', // cookie mode
+                body: JSON.stringify(data),
+            });
+
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}));
+                throw new Error(err.message || 'Ошибка входа');
+            }
+
+            const result = await res.json();
+            get().setUser(result.user);
+            get().setTokens(result.accessToken, result.refreshToken);
+
+            set({ isLoading: false });
+        } catch (e: any) {
+            console.error('Login error:', e);
+            set({ isLoading: false, error: e.message });
+            throw e;
+        }
+    },
+
+    logout: async () => {
+        try {
+            await fetch(`${API_BASE}/api/auth/logout`, {
+                method: 'POST',
+                credentials: 'include', // cookie mode
+            });
+        } catch (err) {
+            console.warn('Logout request failed:', err);
+        }
+
+        set({ user: null, accessToken: null, refreshToken: null });
+    },
+
+    refreshAccessToken: async () => {
+        const { refreshToken } = get();
+        if (!refreshToken) return false;
+
+        try {
+            const res = await fetch(`${API_BASE}/api/auth/refresh`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({ refreshToken }),
+            });
+
+            if (!res.ok) throw new Error('Не удалось обновить токен');
+            const result = await res.json();
+            get().setTokens(result.accessToken, result.refreshToken);
+            return true;
+        } catch (err) {
+            console.error('Token refresh failed:', err);
+            get().logout();
+            return false;
+        }
+    },
+
+    initializeAuth: () => {
+        // Временно ничего не читаем из localStorage
+        // В будущем будет cookie → /api/auth/me
+        console.log('AuthStore initialized (без localStorage)');
+    },
+}));

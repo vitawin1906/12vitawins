@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    "declaration": false,
+    "sourceMap": true,
+    "inlineSources": true
+  },
+  "include": [
+    "src",
+    "db/schema/**/*.ts",
+  ]
+}

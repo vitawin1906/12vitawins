@@ -1,0 +1,5 @@
+apis:
+  main:
+    root: openapi.json
+rules:
+  no-server-example.com: off

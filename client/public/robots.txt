@@ -1,0 +1,31 @@
+User-agent: *
+Allow: /
+
+# Запрет индексации админки и технических страниц
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+Disallow: /checkout
+Disallow: /account
+Disallow: /profile
+Disallow: /login
+Disallow: /_next/
+Disallow: /static/
+
+# Разрешить индексацию основных страниц
+Allow: /
+Allow: /store
+Allow: /blog
+Allow: /about
+Allow: /contact
+Allow: /product/
+Allow: /affiliate
+
+# Crawl delay для снижения нагрузки на сервер
+Crawl-delay: 1
+
+# Sitemap
+Sitemap: https://vitawins.ru/sitemap.xml
+
+# Host для основного домена
+Host: https://vitawins.ru

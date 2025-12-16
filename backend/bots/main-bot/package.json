@@ -1,0 +1,21 @@
+{
+  "name": "vitawin-main-bot",
+  "version": "1.0.0",
+  "description": "VitaWin основной Telegram бот для регистрации и управления пользователями",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "node-telegram-bot-api": "^0.66.0",
+    "axios": "^1.6.0",
+    "dotenv": "^16.3.1",
+    "node-fetch": "^3.3.2",
+    "array.prototype.findindex": "^2.2.3"
+  },
+  "keywords": ["telegram", "bot", "vitawin", "mlm"],
+  "author": "VitaWin Team",
+  "license": "MIT"
+}

@@ -1,0 +1,164 @@
+/* Tailwind v4 core */
+@import "tailwindcss";
+
+/* v4-плагины */
+@plugin "@tailwindcss/typography";
+@plugin "tailwindcss-animate";
+
+/* Глобальные токены (из CSS-переменных) — чтобы работали bg-background, text-foreground, border-border и т.д. */
+@layer base {
+  :root {
+    --background: 0 0% 100%;
+    --foreground: 220 20% 16%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 16%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 16%;
+
+    --primary: 167 100% 39%;
+    --primary-foreground: 210 40% 98%;
+
+    --secondary: 240 5.9% 95%;
+    --secondary-foreground: 222.2 47.4% 11.2%;
+
+    --muted: 210 40% 96.1%;
+    --muted-foreground: 215.4 16.3% 46.9%;
+
+    --accent: 167 100% 96%;
+    --accent-foreground: 167 100% 29%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 220 13% 95%;
+    --input: 214.3 31.8% 91.4%;
+    --ring: 167 100% 39%;
+
+    --radius: 1rem;
+
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
+
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+
+    --popover: 224 71% 4%;
+    --popover-foreground: 213 31% 91%;
+
+    --primary: 167 100% 39%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 222.2 47.4% 11.2%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 167 100% 39%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  /* Глобальный цвет границ по токену */
+  * { border-color: hsl(var(--border)); }
+
+  /* Базовая тема текста/фона */
+  body { @apply bg-background text-foreground; }
+}
+
+/* Определяем theme-токены Tailwind v4 (классы bg-background, text-foreground, border-border, rounded-lg и т.д.) */
+@theme {
+  /* colors */
+  --color-background: hsl(var(--background));
+  --color-foreground: hsl(var(--foreground));
+  --color-card: hsl(var(--card));
+  --color-card-foreground: hsl(var(--card-foreground));
+  --color-popover: hsl(var(--popover));
+  --color-popover-foreground: hsl(var(--popover-foreground));
+
+  --color-primary: hsl(var(--primary));
+  --color-primary-foreground: hsl(var(--primary-foreground));
+  --color-secondary: hsl(var(--secondary));
+  --color-secondary-foreground: hsl(var(--secondary-foreground));
+  --color-muted: hsl(var(--muted));
+  --color-muted-foreground: hsl(var(--muted-foreground));
+  --color-accent: hsl(var(--accent));
+  --color-accent-foreground: hsl(var(--accent-foreground));
+  --color-destructive: hsl(var(--destructive));
+  --color-destructive-foreground: hsl(var(--destructive-foreground));
+
+  --color-border: hsl(var(--border));
+  --color-input: hsl(var(--input));
+  --color-ring: hsl(var(--ring));
+
+  /* sidebar (если нужны как utilities, можно подключать так же) */
+  --color-sidebar-background: hsl(var(--sidebar-background));
+  --color-sidebar-foreground: hsl(var(--sidebar-foreground));
+  --color-sidebar-primary: hsl(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: hsl(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: hsl(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: hsl(var(--sidebar-accent-foreground));
+  --color-sidebar-border: hsl(var(--sidebar-border));
+  --color-sidebar-ring: hsl(var(--sidebar-ring));
+
+  /* radius → rounded-lg/md/sm */
+  --radius-lg: var(--radius);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-sm: calc(var(--radius) - 4px);
+}
+
+/* Остальной кастомный CSS */
+.product-card { transition: transform .3s ease, box-shadow .3s ease; }
+.product-card:hover { transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0,0,0,.08); }
+
+.hero-gradient { background: linear-gradient(120deg, #f8fcfa 0%, #e6f7f2 100%); }
+
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+.fresh-product-image { border-radius: 8px; overflow: hidden; background: #f9f9f9; display:flex; align-items:center; justify-content:center; }
+.fresh-product-badge { position:absolute; top:10px; left:10px; font-size:12px; font-weight:600; padding:4px 8px; border-radius:4px; }
+
+.fresh-product-price { display:flex; align-items:center; gap:8px; margin-top:12px; }
+.fresh-product-price .current { font-size:24px; font-weight:700; color:#333; }
+.fresh-product-price .original { font-size:16px; color:#999; text-decoration: line-through; }
+
+.fresh-tabs { display:flex; border-bottom:1px solid #eee; }
+.fresh-tab { padding:12px 20px; cursor:pointer; font-weight:500; color:#666; position:relative; }
+.fresh-tab.active { color:#333; }
+.fresh-tab.active::after { content:''; position:absolute; bottom:-1px; left:0; right:0; height:2px; background-color:#00b67a; }
+
+.specs-table { width:100%; border-collapse: collapse; }
+.specs-table tr { border-bottom:1px solid #eee; }
+.specs-table tr:last-child { border-bottom:none; }
+.specs-table td { padding:12px 0; }
+.specs-table td:first-child { color:#666; width:40%; }
+.specs-table td:last-child { font-weight:500; }

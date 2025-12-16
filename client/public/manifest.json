@@ -1,0 +1,39 @@
+{
+  "name": "VitaWin — Витамины и БАД с доставкой",
+  "short_name": "VitaWin",
+  "description": "Качественные витамины и БАДы от VitaWin с быстрой доставкой по России",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#10b981",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "categories": ["health", "shopping", "lifestyle"],
+  "screenshots": [
+    {
+      "src": "/placeholder.svg",
+      "sizes": "640x480",
+      "type": "image/svg+xml",
+      "form_factor": "wide"
+    }
+  ]
+}

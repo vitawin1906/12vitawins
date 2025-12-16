@@ -1,0 +1,40 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022"],
+    "types": ["jest", "node"],
+    "exactOptionalPropertyTypes": true,
+    /* главное — не требовать расширений в TS */
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "moduleDetection": "force",
+    "verbatimModuleSyntax": true,
+
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "noEmit": true,
+
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+
+    "baseUrl": ".",
+    "paths": {
+      "#config/*": ["src/config/*"],
+      "#db/*": ["src/db/*"],
+      "#schemas/*": ["src/db/schema/*"],
+      "#modules/*": ["src/modules/*"],
+      "#routes/*": ["src/routes/*"],
+      "#storage/*": ["src/storage/*"],
+      "#utils/*": ["src/utils/*"],
+      "@contracts/*": ["../contracts/src/*"]
+    },
+  },
+  "include": ["src",
+    "../archive/scripts", "vitest.config.ts", "drizzle.config.ts"],
+  "exclude": ["node_modules", "dist", "drizzle", "src/utils/routes.registry.ts"]
+}
