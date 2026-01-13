@@ -1,0 +1,116 @@
+services:
+  # --- Infrastructure ---
+  postgres:
+    image: postgres:16-alpine
+    container_name: vitawin_postgres_dev
+    environment:
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev_password
+      POSTGRES_DB: vitawin_dev
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U dev_user -d vitawin_dev"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vitawin_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: vitawin_redis_dev
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data_dev:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - vitawin_network
+
+  # --- Application ---
+  backend:
+    image: node:20-alpine
+    container_name: vitawin_backend_dev
+    working_dir: /app
+    command: sh -c "npm install && npm run db:migrate && npm run dev"
+    ports:
+      - "8000:8000"
+    environment:
+      NODE_ENV: development
+      PORT: 8000
+      DATABASE_URL: postgresql://dev_user:dev_password@postgres:5432/vitawin_dev
+      REDIS_URL: redis://redis:6379
+      JWT_SECRET: dev_secret_key_for_local_development
+      SESSION_SECRET: dev_session_secret_key_for_local
+      CORS_ORIGIN: http://localhost:5173
+      FRONTEND_URL: http://localhost:5173
+      GOOGLE_CLIENT_ID: ""
+      GOOGLE_CLIENT_SECRET: ""
+      GOOGLE_REDIRECT_URI: http://localhost:8000/api/auth/google/callback
+    volumes:
+      - ./backend:/app
+      - backend_node_modules:/app/node_modules
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - vitawin_network
+
+  client:
+    image: node:20-alpine
+    container_name: vitawin_client_dev
+    working_dir: /app
+    command: sh -c "npm install && npm run dev -- --host"
+    ports:
+      - "5173:5173"
+    environment:
+      VITE_API_URL: http://localhost:8000/api
+      VITE_API_PROXY_TARGET: http://backend:8000
+    volumes:
+      - ./client:/app
+      - client_node_modules:/app/node_modules
+    networks:
+      - vitawin_network
+
+  # --- Bots (optional, require tokens) ---
+  # Uncomment and add tokens to enable bots
+  # main-bot:
+  #   build: ./backend/bots/main-bot
+  #   container_name: vitawin_main_bot_dev
+  #   environment:
+  #     TELEGRAM_BOT_TOKEN: ${TELEGRAM_BOT_TOKEN}
+  #     API_URL: http://backend:8000
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - vitawin_network
+
+  # support-bot:
+  #   build: ./backend/bots/support-bot
+  #   container_name: vitawin_support_bot_dev
+  #   environment:
+  #     TELEGRAM_SUPPORT_BOT_TOKEN: ${TELEGRAM_SUPPORT_BOT_TOKEN}
+  #     API_URL: http://backend:8000
+  #   depends_on:
+  #     - backend
+  #   networks:
+  #     - vitawin_network
+
+volumes:
+  postgres_data_dev:
+  redis_data_dev:
+  backend_node_modules:
+  client_node_modules:
+
+networks:
+  vitawin_network:
+    driver: bridge
