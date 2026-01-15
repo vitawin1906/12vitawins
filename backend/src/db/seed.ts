@@ -14,9 +14,11 @@ import {
     payment,
     ledgerAccount,
     withdrawalRequest,
-    address, levelsMatrixVersions,
+    address,
+    levelsMatrixVersions,
+    settlementSettings,
 } from "#db/schema";
-import type {NewAppUser} from "#db/schema/users";
+import type { NewAppUser } from "#db/schema/users";
 
 
 async function main() {
@@ -39,6 +41,7 @@ async function main() {
     await db.delete(airdropTask);
     await db.delete(achievement);
     await db.delete(appUser);
+    await db.delete(settlementSettings);
 
     console.log("🧹 DB cleaned");
 
@@ -47,7 +50,7 @@ async function main() {
      * ============================================================ */
 
     const passwordAdmin = await bcrypt.hash("admin", 10);
-    const passwordUser  = await bcrypt.hash("user", 10);
+    const passwordUser = await bcrypt.hash("user", 10);
 
     const users: NewAppUser[] = [
         {
@@ -130,6 +133,30 @@ async function main() {
 
 
     console.log("📊 Matrix version created");
+
+    /* ============================================================
+     * SETTLEMENT SETTINGS
+     * ============================================================ */
+
+    await db.insert(settlementSettings).values({
+        referralDiscountPercent: '10',
+        networkFundPercent: '50',
+        vwcCashbackPercent: '5',
+        freeShippingThresholdRub: '7500',
+        deliveryBasePriceRub: '0',
+        pvRubPerPv: '200',
+        roundingMoney: 'half_up',
+        roundingPv: 'floor',
+        calcTimezone: 'Europe/Moscow',
+        isCompressionEnabled: false,
+        fastStartWeeks: 8,
+        fastStartStartPoint: 'activation',
+        infinityRate: '0.0025',
+        optionBonusPercent: '3',
+        isActive: true,
+    });
+
+    console.log("⚙️ Settlement settings created");
 
     /* ============================================================
      * CATEGORY
