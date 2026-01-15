@@ -34,7 +34,7 @@ const MLM_UI_CONFIG: Record<
         benefits: string[];
     }
 > = {
-    customer: {
+    standard: {
         name: "Покупатель",
         description: "Базовый статус",
         icon: ShoppingBag,
@@ -165,8 +165,8 @@ export default function MlmLevelSection() {
                                 <div className="flex items-center space-x-1">
                                     <Users className="h-4 w-4" />
                                     <span className="text-sm">
-                    {stats?.network.totalReferrals ?? 0} рефералов
-                  </span>
+                                        {stats?.network.totalReferrals ?? 0} рефералов
+                                    </span>
                                 </div>
                                 <div className="flex items-center space-x-1">
                                     <Target className="h-4 w-4" />
@@ -204,8 +204,8 @@ export default function MlmLevelSection() {
                                 <div className="flex items-center space-x-2 mb-2">
                                     <TrendingUp className="h-4 w-4 text-blue-600" />
                                     <span className="text-sm font-medium text-blue-900">
-                    Следующий статус: {nextUiConfig.name}
-                  </span>
+                                        Следующий статус: {nextUiConfig.name}
+                                    </span>
                                 </div>
                                 <p className="text-xs text-blue-700 mb-2">
                                     Активация:{" "}
@@ -268,21 +268,19 @@ export default function MlmLevelSection() {
                             return (
                                 <div
                                     key={statusKey}
-                                    className={`relative p-4 rounded-lg border-2 transition-all duration-200 ${
-                                        isCurrentStatus
+                                    className={`relative p-4 rounded-lg border-2 transition-all duration-200 ${isCurrentStatus
                                             ? "border-blue-500 bg-blue-50 ring-2 ring-blue-200"
                                             : isAchieved
                                                 ? "border-green-200 bg-green-50"
                                                 : "border-gray-200 bg-gray-50"
-                                    }`}
+                                        }`}
                                 >
                                     <div className="flex items-center justify-between mb-3">
                                         <div
-                                            className={`flex items-center justify-center w-10 h-10 rounded-lg ${
-                                                isAchieved
+                                            className={`flex items-center justify-center w-10 h-10 rounded-lg ${isAchieved
                                                     ? `bg-gradient-to-br ${ui.color}`
                                                     : "bg-gray-300"
-                                            }`}
+                                                }`}
                                         >
                                             {isAchieved ? (
                                                 <StatusIcon className="h-5 w-5 text-white" />
@@ -298,13 +296,12 @@ export default function MlmLevelSection() {
                                     </div>
 
                                     <h4
-                                        className={`font-semibold mb-2 ${
-                                            isCurrentStatus
+                                        className={`font-semibold mb-2 ${isCurrentStatus
                                                 ? "text-blue-900"
                                                 : isAchieved
                                                     ? "text-green-900"
                                                     : "text-gray-600"
-                                        }`}
+                                            }`}
                                     >
                                         {config.alias || ui.name}
                                     </h4>

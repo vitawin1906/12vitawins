@@ -4,6 +4,8 @@ import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 
 const rootDir = process.cwd();
+// В Docker используем имя сервиса, локально — localhost
+const apiTarget = process.env.VITE_API_PROXY_TARGET || 'http://localhost:8000';
 
 export default defineConfig({
   plugins: [react()],
@@ -16,7 +18,7 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: path.resolve(rootDir, '../dist/public'),
+    outDir: 'dist',
     emptyOutDir: true,
   },
   server: {
@@ -25,7 +27,7 @@ export default defineConfig({
     strictPort: true,
     proxy: {
       '/api': {
-        target: 'http://localhost:8000',
+        target: apiTarget,
         changeOrigin: true,
         secure: false,
       },

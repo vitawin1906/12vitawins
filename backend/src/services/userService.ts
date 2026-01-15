@@ -92,7 +92,8 @@ export const userService = {
         // 3) Else → CreatorPoolService.pickCreatorId()
         if (!referrerId) {
             referrerId = await creatorPoolService.pickCreatorId();
-            if (!referrerId) {
+            // В production требуем referrer, в dev разрешаем null
+            if (!referrerId && process.env.NODE_ENV === 'production') {
                 throw new Error('Creator pool is empty - cannot assign referrer');
             }
         }

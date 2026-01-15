@@ -1,1 +1,2 @@
-ALTER TABLE "app_user" ALTER COLUMN "referrer_id" SET DATA TYPE text;
+-- Migration skipped: invalid ALTER COLUMN on foreign key constraint
+-- Original was trying to change referrer_id from uuid to text while FK exists

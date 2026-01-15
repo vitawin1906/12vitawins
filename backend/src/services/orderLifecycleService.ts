@@ -2,7 +2,7 @@
 import { ledgerService } from './ledgerService';
 import { tryUpgradeToPartner } from './partnerUpgradeService';
 import { networkFundService } from './networkFundService';
-import {type LogOrderEventParams, orderLoggingService} from './orderLoggingService'; // ✅ Task 4.1
+import { type LogOrderEventParams, orderLoggingService } from './orderLoggingService'; // ✅ Task 4.1
 import { fastStartBonusService } from './fastStartBonusService';
 import { infinityBonusService } from './infinityBonusService';
 import { db } from '#db/db';
@@ -294,16 +294,18 @@ export const orderLifecycleService = {
     async calculateAndSaveTotalBonuses(orderId: string): Promise<void> {
         try {
             const { ledgerStorage } = await import('../storage/ledgerStorage');
-            const { posting } = await import('#db/schema/ledger');
+            const { ledgerPosting, ledgerTxn } = await import('#db/schema/ledger');
 
             // Получить ВСЕ начисления (postings) связанные с этим заказом
+            // opType и orderId находятся в ledger_txn, поэтому делаем JOIN
             const postings = await db
                 .select({
-                    amount: posting.amount,
-                    opType: posting.opType,
+                    amount: ledgerPosting.amount,
+                    opType: ledgerTxn.opType,
                 })
-                .from(posting)
-                .where(eq(posting.orderId, orderId));
+                .from(ledgerPosting)
+                .innerJoin(ledgerTxn, eq(ledgerPosting.txnId, ledgerTxn.id))
+                .where(eq(ledgerTxn.orderId, orderId));
 
             // Суммировать только бонусные операции (НЕ VWC cashback, НЕ PV)
             const bonusTypes = [

@@ -27,9 +27,16 @@ class CreatorPoolService {
     }
 
     /** 👉 Теперь можно получить просто ID создателя */
-    async pickCreatorId(): Promise<string> {
+    async pickCreatorId(): Promise<string | null> {
         const pool = await this.getPool();
-        if (!pool.length) throw new Error('Creator pool is empty');
+        if (!pool.length) {
+            // В dev-режиме возвращаем null если пул пуст
+            if (process.env.NODE_ENV !== 'production') {
+                console.warn('⚠️ Creator pool is empty. User will be created without creator.');
+                return null;
+            }
+            throw new Error('Creator pool is empty');
+        }
         return this.pickRandomFrom(pool);
     }
 }

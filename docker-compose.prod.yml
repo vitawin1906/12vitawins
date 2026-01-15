@@ -1,0 +1,80 @@
+# Removed obsolete version tag to avoid warnings
+services:
+  # --- Application ---
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      network: host
+    container_name: vitawin_backend
+    restart: unless-stopped
+    # ports:
+    #   - "8000:8000"
+    expose:
+      - 8000
+    environment:
+      NODE_ENV: production
+      PORT: 8000
+      # DATABASE_URL and REDIS_URL should be provided by Dokploy env vars
+      # DATABASE_URL: ...
+      # REDIS_URL: ...
+    networks:
+      - dokploy-network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+      network: host
+    container_name: vitawin_client
+    restart: unless-stopped
+    # ports:
+    #   - "80:80"
+    expose:
+      - 80
+    networks:
+      - dokploy-network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+
+  # --- Bots ---
+  main-bot:
+    build:
+      context: ./backend/bots/main-bot
+      network: host
+    container_name: vitawin_main_bot
+    restart: unless-stopped
+    environment:
+      # Use service name 'backend' for internal communication
+      API_URL: http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - dokploy-network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+
+  support-bot:
+    build:
+      context: ./backend/bots/support-bot
+      network: host
+    container_name: vitawin_support_bot
+    restart: unless-stopped
+    environment:
+      API_URL: http://backend:8000
+    depends_on:
+      - backend
+    networks:
+      - dokploy-network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
+
+networks:
+  dokploy-network:
+    driver: bridge
