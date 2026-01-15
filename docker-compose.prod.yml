@@ -17,9 +17,7 @@ services:
       - 8000
     networks:
       - dokploy-network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
+
 
   client:
     build:
@@ -31,9 +29,6 @@ services:
       - 80
     networks:
       - dokploy-network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
 
   # --- Bots ---
   main-bot:
@@ -49,9 +44,6 @@ services:
       - backend
     networks:
       - dokploy-network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
 
   support-bot:
     build:
@@ -66,9 +58,6 @@ services:
       - backend
     networks:
       - dokploy-network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
 
 networks:
   dokploy-network:
