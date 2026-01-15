@@ -1,11 +1,11 @@
-version: '3.8'
-
+# Removed obsolete version tag to avoid warnings
 services:
   # --- Application ---
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      network: host
     container_name: vitawin_backend
     restart: unless-stopped
     ports:
@@ -18,21 +18,30 @@ services:
       # REDIS_URL: ...
     networks:
       - vitawin_network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
 
   client:
     build:
       context: ./client
       dockerfile: Dockerfile
+      network: host
     container_name: vitawin_client
     restart: unless-stopped
     ports:
       - "80:80"
     networks:
       - vitawin_network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
 
   # --- Bots ---
   main-bot:
-    build: ./backend/bots/main-bot
+    build:
+      context: ./backend/bots/main-bot
+      network: host
     container_name: vitawin_main_bot
     restart: unless-stopped
     environment:
@@ -42,9 +51,14 @@ services:
       - backend
     networks:
       - vitawin_network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
 
   support-bot:
-    build: ./backend/bots/support-bot
+    build:
+      context: ./backend/bots/support-bot
+      network: host
     container_name: vitawin_support_bot
     restart: unless-stopped
     environment:
@@ -53,6 +67,9 @@ services:
       - backend
     networks:
       - vitawin_network
+    dns:
+      - 8.8.8.8
+      - 8.8.4.4
 
 networks:
   vitawin_network:
