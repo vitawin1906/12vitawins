@@ -6,7 +6,6 @@ services:
       context: ./backend
       dockerfile: Dockerfile
       network: host
-    container_name: vitawin_backend
     restart: unless-stopped
     # ports:
     #   - "8000:8000"
@@ -29,7 +28,6 @@ services:
       context: ./client
       dockerfile: Dockerfile
       network: host
-    container_name: vitawin_client
     restart: unless-stopped
     # ports:
     #   - "80:80"
@@ -46,7 +44,6 @@ services:
     build:
       context: ./backend/bots/main-bot
       network: host
-    container_name: vitawin_main_bot
     restart: unless-stopped
     environment:
       # Use service name 'backend' for internal communication
@@ -63,7 +60,6 @@ services:
     build:
       context: ./backend/bots/support-bot
       network: host
-    container_name: vitawin_support_bot
     restart: unless-stopped
     environment:
       API_URL: http://backend:8000
