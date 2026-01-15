@@ -10,7 +10,7 @@
  */
 
 import bcrypt from "bcrypt";
-import { db } from "#db/db";
+import { db } from "./db.js";
 import { eq, sql } from "drizzle-orm";
 
 import {
@@ -29,8 +29,8 @@ import {
     address,
     levelsMatrixVersions,
     settlementSettings,
-} from "#db/schema";
-import type { NewAppUser } from "#db/schema/users";
+} from "./schema/index.js";
+import type { NewAppUser } from "./schema/users.js";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Constants: Seed User IDs (RFC 4122 compliant UUIDs)
