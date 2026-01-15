@@ -27,7 +27,8 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:seed": "dotenv -e .env -- tsx src/db/seed.ts",
-    "db:reset": "rimraf drizzle/migrations && npm run db:generate && npm run db:migrate && npm run db:seed:new"
+    "db:seed:fresh": "dotenv -e .env -- tsx src/db/seed.ts --fresh",
+    "db:reset": "rimraf drizzle/migrations && npm run db:generate && npm run db:migrate && npm run db:seed:fresh"
   },
   "dependencies": {
     "@types/compression": "^1.8.1",
