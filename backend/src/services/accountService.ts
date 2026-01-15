@@ -140,9 +140,10 @@ export const userService = {
         }
 
         /* 7) MLM-граф (важен, но не критичен) */
+        // Используем user.referrerId т.к. он прошёл валидацию (невалидные UUID → null)
         try {
-            if (referrerId) {
-                await attachChildToParent({ parentId: referrerId, childId: user.id });
+            if (user.referrerId) {
+                await attachChildToParent({ parentId: user.referrerId, childId: user.id });
             }
         } catch (err) {
             console.warn('⚠ MLM attach failed:', err);
