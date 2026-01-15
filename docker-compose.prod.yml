@@ -24,6 +24,8 @@ services:
       context: ./client
       dockerfile: Dockerfile
       network: host
+      args:
+        VITE_API_URL: ${VITE_API_URL:-https://dev-api.vitawins.ru}
     restart: unless-stopped
     expose:
       - 80
