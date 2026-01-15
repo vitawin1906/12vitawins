@@ -23,8 +23,12 @@ export const zUserCreate = z.object({
     googleAvatar: z.string().nullable().optional(),
 
     referralCode: z.string().min(1),
-    // Empty string → null, otherwise validate as UUID
-    referrerId: z.string().transform(v => v === '' ? null : v).pipe(z.string().uuid().nullable()),
+    // Accept null, empty string (→ null), or valid UUID
+    referrerId: z.union([
+        z.null(),
+        z.literal(''),
+        z.string().uuid()
+    ]).transform(v => v === '' ? null : v),
 
     mlmStatus: z.enum(mlmStatusEnum.enumValues).default('customer'),
     rank: z.enum(mlmRankEnum.enumValues).default('member'),
@@ -65,8 +69,12 @@ export const zUserUpdate = z.object({
     googleAvatar: z.string().nullable().optional(),
 
     referralCode: z.string().optional(),
-    // Empty string → null, otherwise validate as UUID
-    referrerId: z.string().transform(v => v === '' ? null : v).pipe(z.string().uuid().nullable()).optional(),
+    // Accept null, empty string (→ null), or valid UUID
+    referrerId: z.union([
+        z.null(),
+        z.literal(''),
+        z.string().uuid()
+    ]).transform(v => v === '' ? null : v).optional(),
 
     mlmStatus: z.enum(mlmStatusEnum.enumValues).optional(),
     rank: z.enum(mlmRankEnum.enumValues).optional(),

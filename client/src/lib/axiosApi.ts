@@ -28,32 +28,19 @@ axiosApi.interceptors.request.use(
     (config) => {
         const store = useAuthStore.getState();
 
-        // Нормализуем URL
-        const url = config.url?.startsWith('/') ? config.url : `/${config.url}`;
-
         // Ставим Content-Type только если не FormData
         if (!(config.data instanceof FormData)) {
             config.headers['Content-Type'] = 'application/json';
         }
 
-        // Если нет вообще токенов → не ставим Authorization
-        if (!store.accessToken && !store.adminToken) {
+        // Если нет токена → не ставим Authorization
+        if (!store.accessToken) {
             delete config.headers['Authorization'];
             return config;
         }
 
-        // ───── 1) ADMIN routes → adminToken ─────
-        if (url.startsWith('/admin')) {
-            if (store.adminToken) {
-                config.headers['Authorization'] = `Bearer ${store.adminToken}`;
-            }
-            return config;
-        }
-
-        // ───── 2) USER routes → accessToken ─────
-        if (store.accessToken) {
-            config.headers['Authorization'] = `Bearer ${store.accessToken}`;
-        }
+        // Устанавливаем Authorization для всех запросов (включая /admin)
+        config.headers['Authorization'] = `Bearer ${store.accessToken}`;
 
         return config;
     },
