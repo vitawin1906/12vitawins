@@ -1,4 +1,5 @@
-# Removed obsolete version tag to avoid warnings
+# Production Docker Compose for Dokploy
+# Все переменные окружения загружаются через env_file из .env (создается Dokploy)
 services:
   # --- Application ---
   backend:
@@ -7,37 +8,29 @@ services:
       dockerfile: Dockerfile
       network: host
     restart: unless-stopped
-    # ports:
-    #   - "8000:8000"
-    expose:
-      - 8000
+    env_file:
+      - .env
     environment:
       NODE_ENV: production
       PORT: 8000
-      # DATABASE_URL and REDIS_URL should be provided by Dokploy env vars
-      # DATABASE_URL: ...
-      # REDIS_URL: ...
+    expose:
+      - 8000
     networks:
       - dokploy-network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
+
 
   client:
     build:
       context: ./client
       dockerfile: Dockerfile
       network: host
+      args:
+        VITE_API_URL: ${VITE_API_URL:-https://dev-api.vitawins.ru}
     restart: unless-stopped
-    # ports:
-    #   - "80:80"
     expose:
       - 80
     networks:
       - dokploy-network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
 
   # --- Bots ---
   main-bot:
@@ -45,32 +38,29 @@ services:
       context: ./backend/bots/main-bot
       network: host
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
-      # Use service name 'backend' for internal communication
       API_URL: http://backend:8000
     depends_on:
       - backend
     networks:
       - dokploy-network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
 
   support-bot:
     build:
       context: ./backend/bots/support-bot
       network: host
     restart: unless-stopped
+    env_file:
+      - .env
     environment:
       API_URL: http://backend:8000
     depends_on:
       - backend
     networks:
       - dokploy-network
-    dns:
-      - 8.8.8.8
-      - 8.8.4.4
 
 networks:
   dokploy-network:
-    driver: bridge
+    external: true

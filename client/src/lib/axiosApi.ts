@@ -1,8 +1,23 @@
 import axios from 'axios';
 import { useAuthStore } from '@/stores/authStore';
 
+// Normalize API URL to ensure it ends with /api/
+function getBaseURL(): string {
+    const envUrl = import.meta.env.VITE_API_URL;
+    if (!envUrl) {
+        return 'http://localhost:8000/api/';
+    }
+    // Remove trailing slash if present
+    const cleanUrl = envUrl.replace(/\/+$/, '');
+    // Add /api if not present
+    if (!cleanUrl.endsWith('/api')) {
+        return `${cleanUrl}/api/`;
+    }
+    return `${cleanUrl}/`;
+}
+
 export const axiosApi = axios.create({
-    baseURL: import.meta.env.VITE_API_URL || 'http://localhost:8000/api/',
+    baseURL: getBaseURL(),
     withCredentials: true,
 });
 
@@ -13,32 +28,19 @@ axiosApi.interceptors.request.use(
     (config) => {
         const store = useAuthStore.getState();
 
-        // Нормализуем URL
-        const url = config.url?.startsWith('/') ? config.url : `/${config.url}`;
-
         // Ставим Content-Type только если не FormData
         if (!(config.data instanceof FormData)) {
             config.headers['Content-Type'] = 'application/json';
         }
 
-        // Если нет вообще токенов → не ставим Authorization
-        if (!store.accessToken && !store.adminToken) {
+        // Если нет токена → не ставим Authorization
+        if (!store.accessToken) {
             delete config.headers['Authorization'];
             return config;
         }
 
-        // ───── 1) ADMIN routes → adminToken ─────
-        if (url.startsWith('/admin')) {
-            if (store.adminToken) {
-                config.headers['Authorization'] = `Bearer ${store.adminToken}`;
-            }
-            return config;
-        }
-
-        // ───── 2) USER routes → accessToken ─────
-        if (store.accessToken) {
-            config.headers['Authorization'] = `Bearer ${store.accessToken}`;
-        }
+        // Устанавливаем Authorization для всех запросов (включая /admin)
+        config.headers['Authorization'] = `Bearer ${store.accessToken}`;
 
         return config;
     },
@@ -76,7 +78,7 @@ async function refreshAccessToken(): Promise<string | null> {
         .catch((e) => {
             console.warn('Refresh failed:', e?.response?.status || e?.message);
             clearUser();
-            try { window.location.href = '/'; } catch {}
+            try { window.location.href = '/'; } catch { }
             return null;
         })
         .finally(() => {

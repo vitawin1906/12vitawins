@@ -11,27 +11,34 @@ COPY . .
 # Build TypeScript
 RUN npm run build
 
-# Prune dev dependencies to reduce image size
-RUN npm prune --production
-
 # --- Runner Stage ---
 FROM node:20-alpine AS runner
 
 WORKDIR /app
 
+# Copy package files
 COPY --from=builder /app/package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
+
+# Install production dependencies + drizzle-kit for migrations
+RUN npm ci --omit=dev && npm install drizzle-kit
+
+# Copy built files
+COPY --from=builder /app/node_modules/drizzle-orm ./node_modules/drizzle-orm
 COPY --from=builder /app/dist ./dist
-# Copy drizzle folder for migrations if needed at runtime
+COPY --from=builder /app/src ./src
+# Copy drizzle folder for migrations
 COPY --from=builder /app/drizzle ./drizzle
-# Copy bots if they are run from within this container (unlikely, they have their own), but maybe shared code?
-# Assuming bots are separate.
+# Copy drizzle config
+COPY --from=builder /app/drizzle.config.ts ./drizzle.config.ts
+# Copy entrypoint script
+COPY --from=builder /app/scripts/docker-entrypoint.sh ./scripts/docker-entrypoint.sh
+RUN chmod +x ./scripts/docker-entrypoint.sh
 
 ENV NODE_ENV=production
-ENV PORT=5000
+ENV PORT=8000
 
 # Expose port
-EXPOSE 5000
+EXPOSE 8000
 
-# Start command
-CMD ["npm", "run", "start:env"]
+# Use entrypoint script to run migrations before starting
+ENTRYPOINT ["./scripts/docker-entrypoint.sh"]
