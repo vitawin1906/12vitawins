@@ -23,13 +23,16 @@ export const zUserCreate = z.object({
     googleAvatar: z.string().nullable().optional(),
 
     referralCode: z.string().min(1),
-    // Accept null, undefined, empty string (→ null), or valid UUID
-    referrerId: z.union([
-        z.null(),
-        z.undefined(),
-        z.literal(''),
-        z.string().uuid()
-    ]).transform(v => (v === '' || v === undefined) ? null : v).optional(),
+    // Accept any value, but only keep valid UUIDs (transform invalid → null)
+    referrerId: z.any().transform(v => {
+        if (v === null || v === undefined || v === '') return null;
+        if (typeof v === 'string') {
+            // Проверяем, валидный ли это UUID (RFC 4122)
+            const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+            return uuidRegex.test(v) ? v : null;
+        }
+        return null;
+    }).optional(),
 
     mlmStatus: z.enum(mlmStatusEnum.enumValues).default('customer'),
     rank: z.enum(mlmRankEnum.enumValues).default('member'),
@@ -70,13 +73,15 @@ export const zUserUpdate = z.object({
     googleAvatar: z.string().nullable().optional(),
 
     referralCode: z.string().optional(),
-    // Accept null, undefined, empty string (→ null), or valid UUID
-    referrerId: z.union([
-        z.null(),
-        z.undefined(),
-        z.literal(''),
-        z.string().uuid()
-    ]).transform(v => (v === '' || v === undefined) ? null : v).optional(),
+    // Accept any value, but only keep valid UUIDs (transform invalid → null)
+    referrerId: z.any().transform(v => {
+        if (v === null || v === undefined || v === '') return null;
+        if (typeof v === 'string') {
+            const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+            return uuidRegex.test(v) ? v : null;
+        }
+        return null;
+    }).optional(),
 
     mlmStatus: z.enum(mlmStatusEnum.enumValues).optional(),
     rank: z.enum(mlmRankEnum.enumValues).optional(),

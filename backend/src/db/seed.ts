@@ -54,7 +54,7 @@ async function main() {
 
     const users: NewAppUser[] = [
         {
-            id: "00000000-0000-0000-0000-000000000001",
+            id: "64f44359-aa83-4497-a113-2980274aeb4c",
             telegramId: "90001",
             username: "admin",
             firstName: "Admin",
@@ -73,7 +73,7 @@ async function main() {
             freedomShares: [25, 25, 25, 25],
         },
         {
-            id: "00000000-0000-0000-0000-000000000002",
+            id: "59a13d30-86c5-4a2c-840c-026d5738aaa1",
             telegramId: "90002",
             username: "partner1",
             firstName: "Партнер",
@@ -92,7 +92,7 @@ async function main() {
             freedomShares: [25, 25, 25, 25],
         },
         {
-            id: "00000000-0000-0000-0000-000000000003",
+            id: "875b0a5f-9c7d-45e7-975d-9b913a0ada49",
             telegramId: "90003",
             username: "partner2",
             firstName: "Партнер",
