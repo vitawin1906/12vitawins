@@ -12,7 +12,7 @@
     "dev:watch": "dotenv -e .env -- tsx -r tsconfig-paths/register watch src/index.ts",
     "typecheck": "tsc --noEmit",
     "build": "tsc -p tsconfig.build.json && tsc-alias -p tsconfig.build.json",
-    "start": "node --experimental-specifier-resolution=node dist/index.js",
+    "start": "tsx dist/index.js",
     "start:env": "dotenv -e .env -- node --experimental-specifier-resolution=node dist/index.js",
     "psql": "sh -c 'psql \"$(grep ^DATABASE_URL .env | cut -d '=' -f2-)\"'",
     "lint": "eslint \"src/**/*.{ts,tsx}\"",
@@ -55,6 +55,7 @@
     "supertest": "^7.1.4",
     "swagger-jsdoc": "^6.2.8",
     "swagger-ui-express": "^5.0.1",
+    "tsx": "^4.20.6",
     "zod": "^4.0.15"
   },
   "devDependencies": {
@@ -96,7 +97,6 @@
     "ts-unused-exports": "^11.0.1",
     "tsc-alias": "^1.8.16",
     "tsconfig-paths": "^4.2.0",
-    "tsx": "^4.20.6",
     "typescript": "^5.9.2"
   }
 }
