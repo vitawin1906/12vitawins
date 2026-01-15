@@ -28,10 +28,10 @@ COPY --from=builder /app/drizzle ./drizzle
 # Assuming bots are separate.
 
 ENV NODE_ENV=production
-ENV PORT=5000
+ENV PORT=8000
 
 # Expose port
-EXPOSE 5000
+EXPOSE 8000
 
-# Start command
-CMD ["npm", "run", "start:env"]
+# Start command (без dotenv - переменные приходят от Dokploy)
+CMD ["npm", "run", "start"]
