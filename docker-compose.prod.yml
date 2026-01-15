@@ -8,8 +8,10 @@ services:
       network: host
     container_name: vitawin_backend
     restart: unless-stopped
-    ports:
-      - "8000:8000"
+    # ports:
+    #   - "8000:8000"
+    expose:
+      - 8000
     environment:
       NODE_ENV: production
       PORT: 8000
@@ -29,8 +31,10 @@ services:
       network: host
     container_name: vitawin_client
     restart: unless-stopped
-    ports:
-      - "80:80"
+    # ports:
+    #   - "80:80"
+    expose:
+      - 80
     networks:
       - dokploy-network
     dns:
