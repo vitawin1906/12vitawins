@@ -182,8 +182,8 @@ export class LedgerService {
         ];
 
         // ✅ Получить upline через mlmStorage (использует network_edge)
-        const mlmStorage = await import('#storage/mlmStorage');
-        const upline = await mlmStorage.default.getUpline(buyerId, 15);
+        const { getUpline } = await import('#storage/mlmStorage');
+        const upline = await getUpline(buyerId, 15);
 
         console.log(`📊 Processing referral bonuses for order ${orderId}: ${upline.length} upline levels found`);
 

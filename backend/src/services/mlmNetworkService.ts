@@ -1,7 +1,7 @@
 // src/services/mlmNetworkService.ts
 import { db } from '#db/db';
 import { and, eq, gte, lte, inArray, sql } from 'drizzle-orm';
-import { appUser, order, ledgerAccount, ledgerPosting } from '#db/schema';
+import { appUser, order, ledgerAccount, ledgerPosting, ledgerTxn } from '#db/schema';
 import { deliveryStatusEnum } from '#db/schema/enums';
 
 /* =========================
@@ -61,11 +61,11 @@ const RANK_RULES: Array<{
     minPersonalPV: number;
     minGroupPV: number;
 }> = [
-    { level: 0, minActiveDirects: 0, minPersonalPV: 0, minGroupPV: 0 },
-    { level: 1, minActiveDirects: 1, minPersonalPV: 50, minGroupPV: 1000 },
-    { level: 2, minActiveDirects: 3, minPersonalPV: 100, minGroupPV: 5000 },
-    { level: 3, minActiveDirects: 5, minPersonalPV: 200, minGroupPV: 15000 },
-];
+        { level: 0, minActiveDirects: 0, minPersonalPV: 0, minGroupPV: 0 },
+        { level: 1, minActiveDirects: 1, minPersonalPV: 50, minGroupPV: 1000 },
+        { level: 2, minActiveDirects: 3, minPersonalPV: 100, minGroupPV: 5000 },
+        { level: 3, minActiveDirects: 5, minPersonalPV: 200, minGroupPV: 15000 },
+    ];
 
 type DeliveryStatus = (typeof deliveryStatusEnum.enumValues)[number];
 
@@ -328,11 +328,12 @@ export class MLMNetworkService {
                 total: sql<number>`COALESCE(SUM((${ledgerPosting.amount})::decimal), 0)`,
                 l1: sql<number>`COALESCE(SUM(CASE WHEN ${ledgerPosting.memo} ~ '\\mL1\\M' THEN (${ledgerPosting.amount})::decimal ELSE 0 END), 0)`,
                 l2p: sql<number>`COALESCE(SUM(CASE WHEN ${ledgerPosting.memo} ~ '\\mL(2|3)\\M' THEN (${ledgerPosting.amount})::decimal ELSE 0 END), 0)`,
-                fastStart: sql<number>`COALESCE(SUM(CASE WHEN ${ledgerPosting.opType} = 'fast_start' THEN (${ledgerPosting.amount})::decimal ELSE 0 END), 0)`,
-                infinity: sql<number>`COALESCE(SUM(CASE WHEN ${ledgerPosting.opType} = 'infinity' THEN (${ledgerPosting.amount})::decimal ELSE 0 END), 0)`,
-                option3: sql<number>`COALESCE(SUM(CASE WHEN ${ledgerPosting.opType} = 'option_bonus' THEN (${ledgerPosting.amount})::decimal ELSE 0 END), 0)`,
+                fastStart: sql<number>`COALESCE(SUM(CASE WHEN ${ledgerTxn.opType} = 'fast_start' THEN (${ledgerPosting.amount})::decimal ELSE 0 END), 0)`,
+                infinity: sql<number>`COALESCE(SUM(CASE WHEN ${ledgerTxn.opType} = 'infinity' THEN (${ledgerPosting.amount})::decimal ELSE 0 END), 0)`,
+                option3: sql<number>`COALESCE(SUM(CASE WHEN ${ledgerTxn.opType} = 'option_bonus' THEN (${ledgerPosting.amount})::decimal ELSE 0 END), 0)`,
             })
             .from(ledgerPosting)
+            .innerJoin(ledgerTxn, eq(ledgerPosting.txnId, ledgerTxn.id))
             .where(eq(ledgerPosting.creditAccountId, refAcc.id));
 
         const round2 = (n: number) => Math.round(n * 100) / 100;

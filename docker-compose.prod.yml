@@ -17,7 +17,7 @@ services:
       # DATABASE_URL: ...
       # REDIS_URL: ...
     networks:
-      - vitawin_network
+      - dokploy-network
     dns:
       - 8.8.8.8
       - 8.8.4.4
@@ -32,7 +32,7 @@ services:
     ports:
       - "80:80"
     networks:
-      - vitawin_network
+      - dokploy-network
     dns:
       - 8.8.8.8
       - 8.8.4.4
@@ -50,7 +50,7 @@ services:
     depends_on:
       - backend
     networks:
-      - vitawin_network
+      - dokploy-network
     dns:
       - 8.8.8.8
       - 8.8.4.4
@@ -66,11 +66,11 @@ services:
     depends_on:
       - backend
     networks:
-      - vitawin_network
+      - dokploy-network
     dns:
       - 8.8.8.8
       - 8.8.4.4
 
 networks:
-  vitawin_network:
+  dokploy-network:
     driver: bridge

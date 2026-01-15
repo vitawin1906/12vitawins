@@ -44,7 +44,7 @@ function verifyState(raw: string): { mode: 'login' | 'link'; ref?: string } | nu
         // TTL 10 минут
         const now = Math.floor(Date.now() / 1000);
         if (now - json.iat > 600) return null;
-        return { mode: json.mode, ref: json.ref };
+        return json.ref !== undefined ? { mode: json.mode, ref: json.ref } : { mode: json.mode };
     } catch {
         return null;
     }
@@ -63,9 +63,12 @@ router.get('/google', (req, res) => {
     }
 
     try {
-        const ref = (req.query.ref as string | undefined) || undefined;
+        const refParam = req.query.ref as string | undefined;
         const csrf = crypto.randomBytes(16).toString('hex');
-        const state = signState({ mode: 'login', ref, csrf, iat: Math.floor(Date.now() / 1000) });
+        const statePayload = refParam
+            ? { mode: 'login' as const, ref: refParam, csrf, iat: Math.floor(Date.now() / 1000) }
+            : { mode: 'login' as const, csrf, iat: Math.floor(Date.now() / 1000) };
+        const state = signState(statePayload);
         const authUrl = getAuthorizationUrl(state);
 
         res.json({
@@ -88,10 +91,13 @@ router.get('/google/init', (req, res) => {
     if (!isGoogleOAuthEnabled()) {
         return res.status(503).json({ success: false, message: 'Google OAuth is not configured' });
     }
-    const ref = (req.query.ref as string | undefined) || undefined;
+    const refParam = req.query.ref as string | undefined;
     const mode = (req.query.mode as 'login' | 'link' | undefined) || 'login';
     const csrf = crypto.randomBytes(16).toString('hex');
-    const state = signState({ mode, ref, csrf, iat: Math.floor(Date.now() / 1000) });
+    const statePayload = refParam
+        ? { mode, ref: refParam, csrf, iat: Math.floor(Date.now() / 1000) }
+        : { mode, csrf, iat: Math.floor(Date.now() / 1000) };
+    const state = signState(statePayload);
     const authUrl = getAuthorizationUrl(state);
     res.redirect(authUrl);
 });
