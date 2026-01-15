@@ -67,6 +67,11 @@ if (!process.env.TZ) process.env.TZ = TIMEZONE;
 
 export const app: Express = express();
 
+// ---------------------- Proxy Trust ----------------------
+// Required for proper IP detection behind reverse proxy (Dokploy/nginx)
+// Fixes: ERR_ERL_UNEXPECTED_X_FORWARDED_FOR in express-rate-limit
+app.set('trust proxy', true);
+
 // ---------------------- Security ----------------------
 app.use(buildHelmet());
 app.use(buildCors());
